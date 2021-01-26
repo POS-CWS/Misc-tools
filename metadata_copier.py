@@ -93,7 +93,7 @@ class Program(QMainWindow):
 
 	def update_info_text(self, stillSearching=True, stillProcessing=True):
 		# TODO: add info about duplicates
-		text = '{0} files found\n\t{1} with metadata\n\t{2} without\n'.format(
+		text = '{0} images found\n\t{1} with metadata\n\t{2} without\n'.format(
 			self.totalJPGs, self.referenceFileCount, self.processed[0])
 		if not stillSearching:
 			text += '{0} reference files found\n{1} files corrected\n{2} files skipped (unable to find info for)\n'.format(
