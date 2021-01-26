@@ -8,15 +8,43 @@ This repository holds a number of small tools:
 
 ## File counter
 
-todo
+This tool counts the number of files in the folder and each subfolder.
+
+#### Usage
+
+If a target folder with a large number of files is chosen, it may take some time to complete. Once finished, the subfolder counts will be both printed to the console and saved in a text file called "file counts.txt" (which is not overwritten - consecutive runs will output a numbered variation on this, such as "file counts (2).txt").
+
+#### Understanding the output
+
+Each line has the full path of a folder, then the number of files in that folder (including files in subfolders, but not including the subfolders themselves). Subfolders are "tabbed over" from their parent, imitating the original folder structure. 
+
+When reading the results in a text editor, it can be helpful to make sure that "word wrap" is disabled.
+
+#### Troubleshooting
+
+If the program fails to start, ensure that your python install has PyQt5 installed. If you have multiple versions of Python installed (such as an additional Python 2 install), ensure that you are starting the program with the correct version of Python.
+
+If the "start" button instead reads "invalid path," try finding the target folder using the "Browse" button instead of typing it. Be careful of how different operating systems treat forward slashes "/" and back slashes "\\".
 
 ## File list/copy
 
-todo
+#### Usage
+
+#### Understanding the output
+
+#### Troubleshooting
+
+#### Technical notes
 
 ## Image sampler
 
-todo
+#### Usage
+
+#### Understanding the output
+
+#### Troubleshooting
+
+#### Technical notes
 
 ## Metadata copier
 
@@ -45,7 +73,7 @@ If the "start" button instead reads "invalid path," try finding the target folde
 
 This tool should stay responsive while working, but if it locks up, let it work for a few minutes. Only after a few minutes, if it hasn't updated the information displayed and is still not responding, is it likely that something has gone wrong. In this case, try running the tool on a smaller folder.
 
-#### Technical notes:
+#### Technical notes
 
 This program compares filenames _only_ up to the first period. This means that all of "picture.jpg", "picture.JPG", "picture.old.jpg", and "picture.new.jpg" _will_ match against each other. Also note that it is case sensitive, so "picture.jpg" will not match against "Picture.jpg".
 
