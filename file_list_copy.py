@@ -12,17 +12,6 @@ from PyQt5.QtGui import *
 
 from functools import partial
 
-osWin = False
-if "win" in sys.platform:
-	osWin = True
-
-
-# Determine which version of python we are working with, for the copy method.
-# Print warning if using 3
-py2 = True
-if sys.version_info > (3, 0):
-	py2 = False
-
 
 app = None
 
@@ -123,7 +112,7 @@ class Program(QMainWindow):
 
 	# Switches between list and copy modes
 	def toggle_mode(self):
-		self.mode = 'list' if self.mode is 'copy' else 'copy'
+		self.mode = 'list' if self.mode == 'copy' else 'copy'
 		self.setWindowTitle(format('File list tool - %s mode' % self.mode))
 		self.verify_paths()
 
@@ -143,7 +132,7 @@ class Program(QMainWindow):
 		inExists = os.path.isdir(str(self.inpathBox.text()))
 		fileExists = os.path.isdir(str(self.filepathBox.text()))
 		outExists = os.path.isdir(str(self.outpathBox.text()))
-		if self.mode is 'list':
+		if self.mode == 'list':
 			if not inExists:
 				self.startBtn.setEnabled(False)
 				self.startBtn.setText("Requires a valid input folder")
@@ -153,7 +142,7 @@ class Program(QMainWindow):
 			else:
 				self.startBtn.setEnabled(True)
 				self.startBtn.setText("Create list")
-		elif self.mode is 'copy':
+		elif self.mode == 'copy':
 			if not inExists:
 				self.startBtn.setEnabled(False)
 				self.startBtn.setText("Requires a valid input folder")
@@ -171,9 +160,9 @@ class Program(QMainWindow):
 			self.startBtn.setText("Program mode not recognized")
 
 	def start_operation(self):
-		if self.mode is 'list':
+		if self.mode == 'list':
 			self.start_build_file_list()
-		elif self.mode is 'copy':
+		elif self.mode == 'copy':
 			self.start_copy_from_list()
 		else:
 			print("unknown mode. Not doing anything")
@@ -278,7 +267,7 @@ class Program(QMainWindow):
 				if os.path.exists(os.path.join(dst, filename)):
 					skipped += 1
 				elif filename in table:
-					if len(table[filename]) is 1:
+					if len(table[filename]) == 1:
 						self.move_file(table[filename][0], os.path.join(dst, filename))
 					else:
 						# TODO: check the paths to decide which one to use

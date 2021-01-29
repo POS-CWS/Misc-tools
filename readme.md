@@ -6,6 +6,8 @@ This repository holds a number of small tools:
 * [Image sampler](#image-sampler)
 * [Metadata copier](#metadata-copier)
 
+Each tool is a single python file, though each requires PyQt5 installed (see the welcome page) and may require additional packages (listed below under the tool itself). To start a tool, run its file using Python 3.
+
 ## File counter
 
 This tool counts the number of files in the folder and each subfolder.
@@ -38,13 +40,29 @@ If the "start" button instead reads "invalid path," try finding the target folde
 
 ## Image sampler
 
+This tool extracts a few images spaced throughout the day from potentially a large set (can be run on multiple months at the same time). 
+
+A version of Python >= 3.8 is recommended as it will vastly improve the image copy rate
+
 #### Usage
 
-#### Understanding the output
+The "source" folder will be recursively searched (searched through all subfolders) for files matching our naming convention for pictures. Once it creates a list of all of these images, it will copy a subset of those images to the "destination" folder. See the Technical Notes section below for more details on how images are selected.
+
+This tool can be run on multiple months simultaneously, and ignores duplicate images found. Note that it may stop responding when started on massive folder sets; don't worry, this is normal. Give the tool time to think, and only close it if it hasn't been responding for a long time.
 
 #### Troubleshooting
 
+If the program fails to start, ensure that your python install has PyQt5 installed. If you have multiple versions of Python installed (such as an additional Python 2 install), ensure that you are starting the program with the correct version of Python.
+
+If the "start" button instead indicates that one or both of the paths are still needed, try finding the target folder using the "Browse" button instead of typing it. Be careful of how different operating systems treat forward slashes "/" and back slashes "\\".
+
 #### Technical notes
+
+Several variables are set at the top of the file that can tweak the tool's behaviour:
+* "startingHour" represents the time of day the tool will attempt to start at, on the earliest day that it can find images for. Note that this is _not_ guarranteed to be the time of the first picture
+* hoursRotation: represents the time of each image the tool will search for. Assuming a full set of images, the tool will take the first image at startingHour, the second at startingHour + hoursRotation[0], the third at startingHour + hoursRotation[0] + hoursRotation[1],...
+	* To change the times of the images beyond the first, change this array. Adding more terms increases the number of images per "cycle", reducing the terms decreases this number.
+	* Note to get images at the same time each day, the sum of hoursRotation should be equal to 24. In general having the same behaviour each day is desirable, but there are some cases where you might not want this (such as a weekly rotation, which would instead sum to 24*7).
 
 ## Metadata copier
 
