@@ -6,7 +6,7 @@ This repository holds a number of small tools:
 * [Image sampler](#image-sampler)
 * [Metadata copier](#metadata-copier)
 
-Each tool is a single python file, though each requires PyQt5 installed (see the welcome page) and may require additional packages (listed below under the tool itself). To start a tool, run its file using Python 3.
+Each tool is a single python file, though each requires PyQt5 installed (see the welcome page) and may require additional packages (listed below under the tool itself). To start a tool, run its file using Python 3. For any tool that copies files, a version of Python >= 3.8 is highly recommended as it will boost file copy performance (which accounts for the vast majority of the running time of most of these tools) on most machines by several times.
 
 ## File counter
 
@@ -30,19 +30,42 @@ If the "start" button instead reads "invalid path," try finding the target folde
 
 ## File list/copy
 
+This tool is intended to save and recreate a specific file structure from an unorganized copy of that data. For our purposes, this is primarily for saving the structure of a "processed" folder of image data and allowing it to be re-created from the "raw" folder of that data (or vice versa).
+
 #### Usage
+
+This tool has 2 modes: "list" and "copy."
+
+In list mode, select the folder you wish to later be able to recreate as the "File source path," and select a new, empty folder where you wish to put this list as the "File list path." When you press the "Create list" button, it will begin to generate this list.
+
+In copy mode, select the source folder for the (unsorted) files as the "File source path," a list folder created by the tool as the "File list path," and where you wish to copy the files to as the "File destination path." When you press the "Copy files in list" button, it will begin to recreate the originally copied file/folder structure, attempting to find and copy each file from the source folder to the destination one.
+
+Be careful the correct folder is chosen for the "File list path" and "File destination path." _Make sure that these do not overlap in any way_.
+
+The "File list folders" have a folder structure identical to the source (except for any empty folders in the source), and each folder has a single file in it if there were any non-folder files in it in the original. You can copy these subfolders out as use them as their own "file list folders," but be careful when doing this. Any unexpected files in these lists may cause unexpected behaviour, or even crashes.
 
 #### Understanding the output
 
+In list mode: the tool will tell you how many files it has counted when creating the list. If this number seems wildly off what you were expecting, make sure your source path is correct.
+
+In copy mode: the tool will give you three numbers when it completes a copy.
+* "copied": the number of files successfully copied over to the new folder. If this number seems wildly off what you were expecting, make sure the list path is correct.
+* "skipped": the number of files that already existed in the destination, and thus haven't been copied over. This number should typically be 0, unless the destination has already been partially recreated.
+* "missing": the number of files that were in the file list, but could not be found in the source folder (and weren't already in the destination). On a successful run, this number should be exactly zero. Any other number means that that many files are missing in the recreated folder.
+
 #### Troubleshooting
 
+If the program fails to start, ensure that your python install has PyQt5 installed. If you have multiple versions of Python installed (such as an additional Python 2 install), ensure that you are starting the program with the correct version of Python.
+
 #### Technical notes
+
+As the tool ignores file paths and works strictly with file names, different files with identical names are likely to be mis-copied.
+
+Empty folders will _not_ be recreated in the final copy
 
 ## Image sampler
 
 This tool extracts a few images spaced throughout the day from potentially a large set (can be run on multiple months at the same time). 
-
-A version of Python >= 3.8 is recommended as it will vastly improve the image copy rate
 
 #### Usage
 

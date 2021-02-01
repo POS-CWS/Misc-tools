@@ -23,25 +23,17 @@ def main():
 	sys.exit(app.exec_())
 
 
-# Copies a single file
-# TODO: optimize this
-def copyfile(src, dst):
-	shutil.copy2(src, dst)
-
-
 # Primary program. Sorts files, provides GUI
 class Program(QMainWindow):
 	def __init__(self):
 		super(Program, self).__init__()
 
-		# Set a few variables for later
-		# Initialize some values, check for metadata for others
+		# Set a few variables used for settings and counting progress
 		self.working = False
 		self.filesCopied = 0
 		self.filesSkipped = 0
 		self.correctForZulu = 1
-		self.allowOverwrite = False
-		self.mode = 'copy'			# always 'copy' or 'list'
+		self.mode = 'list'			# always 'copy' or 'list'
 
 		# set central layout and some default window options
 		self.mainWidget = QWidget()
@@ -68,7 +60,7 @@ class Program(QMainWindow):
 		self.inpathBox.textChanged.connect(self.verify_paths)
 
 		inpathLayout = QHBoxLayout()
-		inpathLayout.addWidget(QLabel("File source path      "))
+		inpathLayout.addWidget(QLabel("File source path       "))
 		inpathLayout.addWidget(self.inpathBox)
 		inpathLayout.addWidget(self.inpathBtn)
 		self.mainLayout.addLayout(inpathLayout)
@@ -79,7 +71,7 @@ class Program(QMainWindow):
 		self.filepathBox.textChanged.connect(self.verify_paths)
 
 		filepathLayout = QHBoxLayout()
-		filepathLayout.addWidget(QLabel("File list path           "))
+		filepathLayout.addWidget(QLabel("File list path             "))
 		filepathLayout.addWidget(self.filepathBox)
 		filepathLayout.addWidget(self.filepathBtn)
 		self.mainLayout.addLayout(filepathLayout)
@@ -95,6 +87,9 @@ class Program(QMainWindow):
 		outpathLayout.addWidget(self.outpathBtn)
 		self.mainLayout.addLayout(outpathLayout)
 
+		self.outpathBtn.setEnabled(False)
+		self.outpathBox.setEnabled(False)
+
 		# Add bar for bottom buttons
 		self.controlsWidget = QWidget()
 		self.controlsLayout = QHBoxLayout()
@@ -102,9 +97,8 @@ class Program(QMainWindow):
 		self.mainLayout.addWidget(self.controlsWidget)
 
 		# Add the button to transfer the files
-		# Initially, this is inactive since we need the user to select inpath/outpath first
 		self.startBtn = QPushButton("Start copy")
-		self.startBtn.setEnabled(False)
+		self.startBtn.setEnabled(False)		# Need inpath/outpath before button is enabled
 		self.startBtn.clicked.connect(self.start_operation)
 		self.controlsLayout.addWidget(self.startBtn)
 
@@ -116,9 +110,12 @@ class Program(QMainWindow):
 		self.setWindowTitle(format('File list tool - %s mode' % self.mode))
 		self.verify_paths()
 
-	# Toggles forced overwrite mode, and updates the text in the options menu
-	def toggle_overwrite(self):
-		self.allowOverwrite = not self.allowOverwrite
+		if self.mode == 'list':
+			self.outpathBtn.setEnabled(False)
+			self.outpathBox.setEnabled(False)
+		else:
+			self.outpathBtn.setEnabled(True)
+			self.outpathBox.setEnabled(True)
 
 	# Method for combining lineEdit and fileSelect methods of getting the path
 	def select_path(self, lineEdit):
@@ -126,7 +123,7 @@ class Program(QMainWindow):
 		if folder:
 			lineEdit.setText(str(folder))
 
-	# Checks whether the inpath and outpath exists.
+	# Checks whether the required folders exist.
 	# Enables and disables the sort button based on this, and places feedback on it
 	def verify_paths(self):
 		inExists = os.path.isdir(str(self.inpathBox.text()))
@@ -165,7 +162,8 @@ class Program(QMainWindow):
 		elif self.mode == 'copy':
 			self.start_copy_from_list()
 		else:
-			print("unknown mode. Not doing anything")
+			# should never get here
+			print("Mode error. Please restart this tool")
 
 	# ---------------------------------------------------------------------------
 
@@ -278,12 +276,12 @@ class Program(QMainWindow):
 					missing += 1
 		return skipped, copied, missing
 
-	# TODO: make this a more efficient copy
 	# TODO: add option to move
 	def move_file(self, src, dst):
 		global app
 		shutil.copy2(src, dst)
 		app.processEvents()
+
 
 # --------------------------------------------------
 
