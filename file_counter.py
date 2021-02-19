@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import re
 import sys
 import os
@@ -12,12 +10,6 @@ from PyQt5.QtWidgets import *
 
 from functools import partial
 
-# Determine which version of python we are working with, for the copy method.
-# Print warning if using 3
-py2 = True
-if sys.version_info > (3, 0):
-	py2 = False
-
 
 app = None
 
@@ -27,6 +19,7 @@ def main():
 	app = QApplication(sys.argv)
 	ex = Program()
 	sys.exit(app.exec_())
+
 
 # Primary program. Sorts files, provides GUI
 class Program(QMainWindow):
@@ -69,10 +62,12 @@ class Program(QMainWindow):
 
 		# Add the button to transfer the files
 		# Initially, this is inactive since we need the user to select inpath/outpath first
-		self.sortBtn = QPushButton("Start Count")
+		self.sortBtn = QPushButton("  Start Count  ")
 		self.sortBtn.setEnabled(False)
 		self.sortBtn.clicked.connect(self.start_count)
+		self.controlsLayout.addSpacerItem(build_horizontal_spacer())
 		self.controlsLayout.addWidget(self.sortBtn)
+		self.controlsLayout.addSpacerItem(build_horizontal_spacer())
 
 		self.show()
 
@@ -87,11 +82,11 @@ class Program(QMainWindow):
 	def verify_paths(self):
 		if not os.path.exists(str(self.inpathBox.text())):
 			self.sortBtn.setEnabled(False)
-			self.sortBtn.setText("Invalid inpath")
+			self.sortBtn.setText("  Invalid inpath  ")
 		else:
 			if not self.working:
 				self.sortBtn.setEnabled(True)
-			self.sortBtn.setText("Start count")
+			self.sortBtn.setText("  Start count  ")
 
 	def start_count(self):
 		self.working = True
@@ -107,14 +102,6 @@ class Program(QMainWindow):
 		self.statusBar().showMessage("Finished. " + str(self.totalFileCount) + " files.")
 		self.working = False
 		self.verify_paths()
-
-		# message = "Finished. " + str(self.filesCopied) + " files copied, " + \
-		# 							str(self.filesSkipped) + " files skipped, " + str(self.filesNotParsed) + \
-		# 							" files " + "not parsed and placed in unsorted foler."
-		# self.statusBar().showMessage(message)
-		# print(message)
-		# self.working = False
-		# self.verify_paths()
 
 	def count_folder(self, inpath):
 		self.statusBar().showMessage("Count: " + str(self.totalFileCount))
@@ -156,6 +143,13 @@ class Program(QMainWindow):
 		if len(res) > 2:
 			for sub in res[2]:
 				self.print_recurse(sub, outfile, depth+1)
+
+
+# ----------------------------------------
+
+
+def build_horizontal_spacer():
+	return QSpacerItem(20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
 
 
 # --------------------------------------------------
