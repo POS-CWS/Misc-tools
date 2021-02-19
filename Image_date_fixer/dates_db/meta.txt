@@ -1,0 +1,2 @@
+Location: San Juan
+Margin (Seconds): 0
