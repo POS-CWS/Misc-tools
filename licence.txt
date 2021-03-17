@@ -1,6 +1,4 @@
-This program is for selecting several images per day out of a large
-collection.
-Copyright (C) 2020 Gregory O'Hagan
+Copyright (C) 2018-2021 Gregory O'Hagan
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
