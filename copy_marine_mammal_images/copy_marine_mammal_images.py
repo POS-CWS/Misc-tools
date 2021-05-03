@@ -248,6 +248,9 @@ class Program(QMainWindow):
 	def create_output_list(fileList, outpath):
 		with open(os.path.join(outpath, 'filelist.txt'), 'w+') as outfile:
 			for filename in fileList:
+				outfile.write(os.path.split(filename)[1] + '\n')
+		with open(os.path.join(outpath, 'filelist_full_paths.txt'), 'w+') as outfile:
+			for filename in fileList:
 				outfile.write(filename + '\n')
 
 

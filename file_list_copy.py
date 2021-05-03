@@ -39,7 +39,7 @@ class Program(QMainWindow):
 		self.mainWidget = QWidget()
 		self.setCentralWidget(self.mainWidget)
 		self.setGeometry(250, 400, 600, 200)
-		self.setWindowTitle('File list tool - copy mode')
+		self.setWindowTitle('File list tool - {} mode'.format(self.mode))
 
 		self.mainLayout = QVBoxLayout()
 		self.mainWidget.setLayout(self.mainLayout)
