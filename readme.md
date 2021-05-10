@@ -1,12 +1,22 @@
 # Misc tools
 
 This repository holds a number of small tools:
+* [Copy Marine Mammal images](#copy-marine-mammal-images)
 * [File counter](#file-counter)
 * [File list/copier](#file-listcopy)
+* [Image date fixer](#image-date-fixer)
 * [Image sampler](#image-sampler)
 * [Metadata copier](#metadata-copier)
 
 Each tool is a single python file, though each requires PyQt5 installed (see the welcome page) and may require additional packages (listed below under the tool itself). To start a tool, run its file using Python 3. For any tool that copies files, a version of Python >= 3.8 is highly recommended as it will boost file copy performance (which accounts for the vast majority of the running time of most of these tools) on most machines by several times.
+
+## Copy Marine Mammal images
+
+#### Usage
+
+#### Understanding the output
+
+#### Troubleshooting
 
 ## File counter
 
@@ -34,11 +44,13 @@ This tool is intended to save and recreate a specific file structure from an uno
 
 #### Usage
 
-This tool has 2 modes: "list" and "copy."
+This tool has 3 modes: "list," "copy," and "test subset"
 
 In list mode, select the folder you wish to later be able to recreate as the "File source path," and select a new, empty folder where you wish to put this list as the "File list path." When you press the "Create list" button, it will begin to generate this list.
 
 In copy mode, select the source folder for the (unsorted) files as the "File source path," a list folder created by the tool as the "File list path," and where you wish to copy the files to as the "File destination path." When you press the "Copy files in list" button, it will begin to recreate the originally copied file/folder structure, attempting to find and copy each file from the source folder to the destination one.
+
+Test subset mode is for checking whether all of the files in one folder are duplicated in another folder. Select the folder that you will be keeping as the "File source path," and select the folder that you expect to be able to recreate from this source as the "File destination path." When you press the "Test if destination is a subset of source" button, it will check that every file in the destination path is also contained in the source path.
 
 Be careful the correct folder is chosen for the "File list path" and "File destination path." _Make sure that these do not overlap in any way_.
 
@@ -62,6 +74,16 @@ If the program fails to start, ensure that your python install has PyQt5 install
 As the tool ignores file paths and works strictly with file names, different files with identical names are likely to be mis-copied.
 
 Empty folders will _not_ be recreated in the final copy
+
+This tool will handle any images that have had their filenames changed with the image date fixer tool; any images renamed using this tool will be recorded in the lists as the original name and will be copied with this tool using their original name, regardless of how the filename appears in the folders when the list is created or where the original file is retreived from when rebuilding a folder. Note that the clause to handle this searches for filenames with brackets in them. Non-image filenames (or those that don't follow the convention that tool uses) that contain brackets at the end of the filename are likely to have unexpected results from this tool.
+
+## Image date fixer
+
+#### Usage
+
+#### Understanding the output
+
+#### Troubleshooting
 
 ## Image sampler
 

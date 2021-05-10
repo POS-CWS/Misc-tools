@@ -33,7 +33,7 @@ class Program(QMainWindow):
 		self.filesCopied = 0
 		self.filesSkipped = 0
 		self.correctForZulu = 1
-		self.mode = 'list'			# always 'copy' or 'list'
+		self.mode = 'list'			# one of 'copy', 'list', 'test subset'
 
 		# set central layout and some default window options
 		self.mainWidget = QWidget()
@@ -106,16 +106,30 @@ class Program(QMainWindow):
 
 	# Switches between list and copy modes
 	def toggle_mode(self):
-		self.mode = 'list' if self.mode == 'copy' else 'copy'
+		if self.mode == 'list':
+			self.mode = 'copy'
+		elif self.mode == 'copy':
+			self.mode = 'test subset'
+		else:
+			self.mode = 'list'
 		self.setWindowTitle(format('File list tool - %s mode' % self.mode))
 		self.verify_paths()
 
 		if self.mode == 'list':
 			self.outpathBtn.setEnabled(False)
 			self.outpathBox.setEnabled(False)
+			self.filepathBox.setEnabled(True)
+			self.filepathBtn.setEnabled(True)
+		elif self.mode == 'copy':
+			self.outpathBtn.setEnabled(True)
+			self.outpathBox.setEnabled(True)
+			self.filepathBox.setEnabled(True)
+			self.filepathBtn.setEnabled(True)
 		else:
 			self.outpathBtn.setEnabled(True)
 			self.outpathBox.setEnabled(True)
+			self.filepathBox.setEnabled(False)
+			self.filepathBtn.setEnabled(False)
 
 	# Method for combining lineEdit and fileSelect methods of getting the path
 	def select_path(self, lineEdit):
@@ -152,6 +166,16 @@ class Program(QMainWindow):
 			else:
 				self.startBtn.setEnabled(True)
 				self.startBtn.setText("Copy files in list")
+		elif self.mode == 'test subset':
+			if not inExists:
+				self.startBtn.setEnabled(False)
+				self.startBtn.setText("Requires a valid input folder")
+			elif not outExists:
+				self.startBtn.setEnabled(False)
+				self.startBtn.setText("Requires a destination folder")
+			else:
+				self.startBtn.setEnabled(True)
+				self.startBtn.setText("Test if destination is a subset of source")
 		else:
 			self.startBtn.setEnabled(False)
 			self.startBtn.setText("Program mode not recognized")
@@ -161,6 +185,8 @@ class Program(QMainWindow):
 			self.start_build_file_list()
 		elif self.mode == 'copy':
 			self.start_copy_from_list()
+		elif self.mode == 'test subset':
+			self.start_verify_folders()
 		else:
 			# should never get here
 			print("Mode error. Please restart this tool")
@@ -191,7 +217,8 @@ class Program(QMainWindow):
 				if os.path.isdir(filepath):
 					fileCount += self.build_file_list(filepath, os.path.join(listPath, filename))
 				else:
-					fileList.write(filename)
+					shortFilename = self.parse_filename(filename)
+					fileList.write(shortFilename)
 					fileList.write('\n')
 					fileCount += 1
 
@@ -226,16 +253,17 @@ class Program(QMainWindow):
 	def create_hash(self, table, path):
 		for filename in os.listdir(path):
 			filepath = os.path.join(path, filename)
+			shortFilename = self.parse_filename(filename)
 			if os.path.isdir(filepath):
 				self.create_hash(table, filepath)
 			else:
-				if filename not in table:
-					table[filename] = (filepath, )
+				if shortFilename not in table:
+					table[shortFilename] = (filepath, )
 				# Handle multiple files with the same filename
 				else:
-					li = list(table[filename])
+					li = list(table[shortFilename])
 					li.append(filepath)
-					table[filename] = tuple(li)
+					table[shortFilename] = tuple(li)
 
 	def iterate_through_list(self, listPath, table, dst):
 		skipped, copied, missing = 0, 0, 0
@@ -282,6 +310,61 @@ class Program(QMainWindow):
 		shutil.copy2(src, dst)
 		app.processEvents()
 
+# --------------------------------------------------
+
+	def start_verify_folders(self):
+		src = str(self.inpathBox.text())
+		dst = str(self.outpathBox.text())
+		if not os.path.isdir(src) or not os.path.isdir(dst):
+			print("Warning: source or destination path not a folder. Cancelling verify operation")
+			return
+
+		self.verify_folders(src, dst)
+
+	def verify_folders(self, src, dst):
+		global app
+		table = {}
+		self.statusBar().showMessage('indexing source files...')
+		app.processEvents()
+
+		self.create_hash(table, src)
+		self.statusBar().showMessage('Created hashmap. Working on verify...')
+		app.processEvents()
+
+		present, missing = self.verify_folder(table, dst, 0, 0)
+		if missing == 0:
+			self.statusBar().showMessage("Safe: all {} files in destination found in source".format(present))
+		else:
+			self.statusBar().showMessage("NOT SAFE: {} files found, {} files missing".format(present, missing))
+
+	def verify_folder(self, table, toCheck, present, missing):
+		for filename in os.listdir(toCheck):
+			filepath = os.path.join(toCheck, filename)
+			if os.path.isdir(filepath):
+				present, missing = self.verify_folder(table, filepath, present, missing)
+				continue
+
+			shortFilename = self.parse_filename(filename)
+			if shortFilename in table:
+				present += 1
+			else:
+				missing += 1
+
+			if present + missing % 100 == 0:
+				self.statusBar().showMessage('Working... %d found, %d missing' % (present, missing))
+				app.processEvents()
+
+		return present, missing
+
+# --------------------------------------------------
+
+	# Extracts a filename out of brackets.
+	# example: somePicture(originalName).jpg -> originalName.jpg
+	def parse_filename(self, filename):
+		m = re.search(r"\((.{5}.*)\)\.", filename)
+		if not m:
+			return filename
+		return self.parse_filename(m.group(1) + '.jpg')
 
 # --------------------------------------------------
 
