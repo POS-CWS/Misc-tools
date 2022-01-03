@@ -4,6 +4,7 @@ This repository holds a number of small tools:
 * [Copy Marine Mammal images](#copy-marine-mammal-images)
 * [File counter](#file-counter)
 * [File list/copier](#file-listcopy)
+* [File list utility](#file-list-utility)
 * [Image date fixer](#image-date-fixer)
 * [Image sampler](#image-sampler)
 * [Metadata copier](#metadata-copier)
@@ -76,6 +77,26 @@ As the tool ignores file paths and works strictly with file names, different fil
 Empty folders will _not_ be recreated in the final copy
 
 This tool will handle any images that have had their filenames changed with the image date fixer tool; any images renamed using this tool will be recorded in the lists as the original name and will be copied with this tool using their original name, regardless of how the filename appears in the folders when the list is created or where the original file is retreived from when rebuilding a folder. Note that the clause to handle this searches for filenames with brackets in them. Non-image filenames (or those that don't follow the convention that tool uses) that contain brackets at the end of the filename are likely to have unexpected results from this tool.
+
+## File List Utility
+
+A simple utility for listing all files in a single folder.
+
+#### Usage
+
+Place File_list.pyc into the target folder and simply double click it. It will place an output text prefixed "000fileList__", which will be at the top of the folder if files are sorted alphabetically.
+
+Note that this tool ignores subfolders, ignores itself and its related files (such as compile_File_list.py), and ignores any files without a file extension (such as most folders).
+
+#### Understanding the output
+
+The output file lists every file in the current folder, as well as a count on the number of files listed.
+
+#### Technical notes
+
+Source code is present in File_list.py. If you modify this code, you can
+compile it by running compile_file_list.py, which will generate a new
+.pyc file for convenience.
 
 ## Image date fixer
 
