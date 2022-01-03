@@ -188,8 +188,7 @@ class Program(QMainWindow):
 		self.renameBtn.clicked.connect(self.rename_select_folder)
 		self.endLayout.addWidget(self.renameBtn)
 
-		self.update_location_list()
-		self.update_timing_list()
+		self.update_display()
 
 	# Handles changing the active location
 	# Attach buttons with this: b.clicked.connect(partial(self.loc_button_event, name))

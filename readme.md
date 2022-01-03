@@ -100,9 +100,19 @@ compile it by running compile_file_list.py, which will generate a new
 
 ## Image date fixer
 
+This tool changes file timestamps based on image EXIF data. It can be used to add, offset, or correct timestamps on image files, typically in preparation for using the AIS linker tool.
+
 #### Usage
 
+Open up the tool, select the correct location from the bar on the left, then select the images to have their timestamps corrected using the button on the bottom right. This tool is recursive, so it will look through all subfolders.
+
+To undo renaming the files in a folder, select the "undo rename" option from the file menu, then choose the folder.
+
+Since this tool stores data about each location, running it from a central location (such as a network drive) is recommended. Multiple people using this tool simultaneously will not cause any issues, provided they do not try to edit the tool's data for a single location at the same time.
+
 #### Understanding the output
+
+Images will be renamed based on the image timestamp if that timestamp differs from the filename's current timestamp (or if the filename doesn't include a timestamp it recognizes). The original timestamp is placed in brackets at the end of the filename, enabling this process to be undone if needed. Non-image files (anything that can't be opened with the image library) are ignored.
 
 #### Troubleshooting
 
