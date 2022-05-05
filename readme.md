@@ -13,11 +13,23 @@ Each tool is a single python file, though each requires PyQt5 installed (see the
 
 ## Copy Marine Mammal images
 
+This tool is for efficiently copying images out of specifically named folders, which in our use case is the marine mammal images from a daily, monthly, or larger folder.
+
 #### Usage
+
+Choose the root folder that you wish to search and copy images out of as the "source" folder, and where you'd like to either copy the images to or create a list of files in as the "destination".
 
 #### Understanding the output
 
+If the "copy images found" box is checked, all found images will be copied. If "create image list" is checked, two file lists will be created in the destination. One will have the names of all the files (but _not_ the paths), while the other will have the full file path for each file.
+
 #### Troubleshooting
+
+Two text files are used to determine which folders to copy or ignore. In each of these, each line is a possible foldername:
+* "marine mammal folders.txt": images in these folders are copied
+* "other folders.txt": images in these folders are ignored
+
+Only .jpg images (and obviously folders) are considered. All other files are ignored.
 
 ## File counter
 
@@ -25,7 +37,7 @@ This tool counts the number of files in the folder and each subfolder.
 
 #### Usage
 
-If a target folder with a large number of files is chosen, it may take some time to complete. Once finished, the subfolder counts will be both printed to the console and saved in a text file called "file counts.txt" (which is not overwritten - consecutive runs will output a numbered variation on this, such as "file counts (2).txt").
+Choose the folder that you wish to count. If a target folder with a large number of files is chosen, it may take some time to complete. Once finished, the subfolder counts will be both printed to the console and saved in a text file called "file counts.txt" (which is not overwritten - consecutive runs will output a numbered variation on this, such as "file counts (2).txt").
 
 #### Understanding the output
 
